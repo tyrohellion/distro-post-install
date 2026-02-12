@@ -2,7 +2,7 @@
 
 1. `git clone https://github.com/tyrohellion/distro-post-install`
 2. `cd distro-post-install`
-3. `cd <Arch or Solus>`
+3. `cd <distro>`
 4. `sudo chmod +x ./setup.sh`
 5. `./setup.sh`
 
