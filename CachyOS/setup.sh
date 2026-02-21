@@ -99,6 +99,8 @@ install_flatpaks() {
     org.kde.okular
     com.usebottles.bottles
     io.github.plrigaux.sysd-manager
+    io.github.shonebinu.Brief
+    com.system76.Popsicle
   )
 
   info "Installing Flatpaks..."
