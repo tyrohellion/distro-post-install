@@ -53,6 +53,8 @@ install_packages() {
     flatpak
     proton-ge-custom-bin
     fwupd
+    tesseract-data-eng
+    tesseract
   )
   info "Installing packages..."
   yay -Syu --needed --noconfirm "${packages[@]}"
