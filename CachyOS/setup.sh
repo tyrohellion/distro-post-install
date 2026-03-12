@@ -295,7 +295,9 @@ alias jctl="journalctl -p 3 -xb"
 # Recent installed packages
 alias rip="expac --timefmt='%Y-%m-%d %T' '%l\t%n %v' | sort | tail -200 | nl"
 
-alias up="yay -Syu && flatpak update"
+alias fish-config="kate /usr/share/cachyos-fish-config/cachyos-config.fish"
+
+alias up="flatpak update && yay -Syu"
 alias xwayland-list="xlsclients -l"
 alias firmware-update="sudo fwupdmgr refresh && sudo fwupdmgr get-updates && sudo fwupdmgr update"
 alias polling="gamepadla-polling"
