@@ -28,7 +28,6 @@ install_packages() {
   local packages=(
     base-devel
     steam
-    helium-browser-bin
     pfetch
     fastfetch
     ffmpeg
@@ -102,7 +101,12 @@ install_flatpaks() {
     com.usebottles.bottles
     io.github.plrigaux.sysd-manager
     io.github.shonebinu.Brief
-    com.system76.Popsicle
+    io.github.seadve.Mousai
+    io.github.sitraorg.sitra
+    io.github.swordpuffin.hunt
+    io.missioncenter.MissionCenter
+    org.gnome.Snapshot
+    page.tesk.Refine
   )
 
   info "Installing Flatpaks..."
