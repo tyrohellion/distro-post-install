@@ -37,8 +37,6 @@ install_packages() {
     inter-font
     github-desktop
     xdg-desktop-portal-kde
-    kjournald
-    kexi
     xorg-xlsclients
     papirus-icon-theme
     ffmpegthumbs
@@ -54,6 +52,9 @@ install_packages() {
     fwupd
     tesseract-data-eng
     tesseract
+    helium-browser-bin
+    syncthing
+    cachyos/vscodium
   )
   info "Installing packages..."
   yay -Syu --needed --noconfirm "${packages[@]}"
@@ -82,14 +83,10 @@ install_flatpaks() {
     io.gitlab.theevilskeleton.Upscaler
     org.kde.haruna
     org.gnome.Calculator
-    com.nextcloud.desktopclient.nextcloud
     com.spotify.Client
     com.heroicgameslauncher.hgl
     org.onlyoffice.desktopeditors
     com.modrinth.ModrinthApp
-    app.zen_browser.zen
-    com.brave.Browser
-    com.vscodium.codium
     com.vysp3r.ProtonPlus
     org.localsend.localsend_app
     org.kde.kcolorchooser
@@ -106,7 +103,6 @@ install_flatpaks() {
     io.github.swordpuffin.hunt
     io.missioncenter.MissionCenter
     org.gnome.Snapshot
-    page.tesk.Refine
   )
 
   info "Installing Flatpaks..."
@@ -134,7 +130,7 @@ apply_konsave() {
 
   info "Applying konsave profile..."
   quiet konsave -i "$knsv"
-  quiet konsave -a arch
+  quiet konsave -a cachy
   success "KDE profile applied."
 }
 
@@ -334,6 +330,7 @@ setup_mangohud_config() {
   gpu_load_change
   cpu_stats
   cpu_load_change
+  #fps_limit=237
   fps
   fps_color_change
   fps_metrics=avg,0.01
