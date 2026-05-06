@@ -42,7 +42,7 @@ install_packages() {
     ffmpegthumbs
     openssh
     firefox
-    drawy-git
+    drawy
     r2modman-bin
     gamepadla-polling
     konsave
@@ -55,6 +55,7 @@ install_packages() {
     helium-browser-bin
     syncthing
     cachyos/vscodium
+    cachyos/proton-cachyos-slr
   )
   info "Installing packages..."
   yay -Syu --needed --noconfirm "${packages[@]}"
@@ -102,20 +103,18 @@ install_flatpaks() {
     io.github.sitraorg.sitra
     io.github.swordpuffin.hunt
     io.missioncenter.MissionCenter
-    org.gnome.Snapshot
   )
 
   info "Installing Flatpaks..."
 
-  if ! flatpak remote-list | grep -q "^flathub-beta"; then
-    flatpak remote-add --if-not-exists --system flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
-  fi
+   flatpak remote-add --if-not-exists --user flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+   flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-  flatpak install -y --noninteractive --system flathub "${flatpaks[@]}"
+   flatpak install --user -y flathub "${flatpaks[@]}"
 
-  if ! flatpak list --app | grep -q "^com.stremio.Stremio"; then
-    flatpak install -y flathub-beta --system com.stremio.Stremio
-  fi
+  #if ! flatpak list --app | grep -q "^com.stremio.Stremio"; then
+  #  flatpak install -y flathub-beta --user com.stremio.Stremio
+  #fi
 
   success "Flatpaks installed."
 }
