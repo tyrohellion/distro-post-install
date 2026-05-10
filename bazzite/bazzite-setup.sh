@@ -28,58 +28,61 @@ install_flatpaks() {
     io.github.nokse22.asciidraw
     org.gnome.gitlab.YaLTeR.VideoTrimmer
     com.github.unrud.VideoDownloader
-    com.github.tenderowl.frog
     org.gnome.design.Lorem
     com.authormore.penpotdesktop
     com.github.taiko2k.avvie
-    com.github.tchx84.Flatseal
-    io.github.flattool.Warehouse
     io.github.josephmawa.SpellingBee
     io.github.wartybix.Constrict
     org.gnome.Decibels
     org.gnome.design.Lorem
     io.gitlab.theevilskeleton.Upscaler
-    org.kde.haruna
     org.gnome.Calculator
     com.spotify.Client
     com.heroicgameslauncher.hgl
     org.onlyoffice.desktopeditors
     com.modrinth.ModrinthApp
-    app.zen_browser.zen
-    com.brave.Browser
-    com.vscodium.codium
-    com.vysp3r.ProtonPlus
     org.localsend.localsend_app
     org.kde.kcolorchooser
     org.kde.kdenlive
     org.gimp.GIMP
     org.kde.krita
-    org.kde.gwenview
-    org.kde.okular
     com.usebottles.bottles
     io.github.plrigaux.sysd-manager
     io.github.shonebinu.Brief
     io.github.seadve.Mousai
-    io.github.sitraorg.sitra
     io.github.swordpuffin.hunt
     io.missioncenter.MissionCenter
-    org.gnome.Snapshot
-    page.tesk.Refine
+    com.stremio.Stremio
+    org.videolan.VLC
+    com.github.zocker_160.SyncThingy
   )
 
   info "Installing Flatpaks..."
 
-  if ! flatpak remote-list | grep -q "^flathub-beta"; then
-    flatpak remote-add --if-not-exists --system flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
-  fi
+   flatpak remote-add --if-not-exists --system flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+   flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-  flatpak install -y --noninteractive --system flathub "${flatpaks[@]}"
+   flatpak install --system -y flathub "${flatpaks[@]}"
 
-  if ! flatpak list --app | grep -q "^com.stremio.Stremio"; then
-    flatpak install -y flathub-beta --system com.stremio.Stremio
-  fi
+  #if ! flatpak list --app | grep -q "^com.stremio.Stremio"; then
+  #  flatpak install -y flathub-beta --user com.stremio.Stremio
+  #fi
 
   success "Flatpaks installed."
+}
+
+apply_konsave() {
+  local knsv="bazzite.knsv"
+
+  if [[ ! -f "$knsv" ]]; then
+    warn "Konsave file '$knsv' not found. Skipping."
+    return
+  fi
+
+  info "Applying konsave profile..."
+  quiet konsave -i "$knsv"
+  quiet konsave -a bazzite
+  success "KDE profile applied."
 }
 
 setup_mangohud_config() {
@@ -94,8 +97,7 @@ setup_mangohud_config() {
   gpu_load_change
   cpu_stats
   cpu_load_change
-  #237 cap for vrr on gnome
-  fps_limit = 237
+  #fps_limit=237
   fps
   fps_color_change
   fps_metrics=avg,0.01
@@ -143,79 +145,10 @@ EOF
   success "MangoHud config written."
 }
 
-customize_firefox() {
-  info "Customizing Firefox..."
-  local firefox_dir="$HOME/.config/mozilla/firefox"
-  local tmp=$(mktemp -d)
-
-  quiet git clone --depth=1 https://github.com/tyrohellion/arcadia "$tmp"
-
-  local profile
-  profile=$(find "$firefox_dir" -maxdepth 1 -type d -name "*default-release" | head -n 1)
-
-  if [[ -d "$profile" ]]; then
-    quiet cp -r "$tmp/chrome" "$profile/"
-    quiet cp "$tmp/user.js" "$profile/"
-    success "Firefox theme applied."
-  else
-    warn "Firefox profile not found. Skipping."
-  fi
-
-  quiet rm -rf "$tmp"
-}
-
-setup_mic_volume_script() {
-  local mic_script="$HOME/.local/bin/mic-volume-set.sh"
-
-  mkdir -p "$(dirname "$mic_script")"
-
-  cat > "$mic_script" <<'EOF'
-#!/usr/bin/env bash
-
-# Retry a few times in case PipeWire isn't ready yet
-for i in {1..5}; do
-  wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.4 && exit 0
-  sleep 1
-done
-
-exit 1
-EOF
-
-  chmod +x "$mic_script"
-  success "Mic volume script created at $mic_script"
-}
-
-setup_mic_systemd_service() {
-  local service_dir="$HOME/.config/systemd/user"
-  local service_file="$service_dir/mic-volume.service"
-
-  mkdir -p "$service_dir"
-
-  cat > "$service_file" <<EOF
-[Unit]
-Description=Set Mic Volume (User)
-After=pipewire.service wireplumber.service
-
-[Service]
-Type=oneshot
-ExecStart=%h/.local/bin/mic-volume-set.sh
-
-[Install]
-WantedBy=default.target
-EOF
-
-  systemctl --user daemon-reload
-  systemctl --user enable --now mic-volume.service
-
-  success "Mic volume systemd service enabled"
-}
-
 main() {
   install_flatpaks
+  apply_konsave
   setup_mangohud_config
-  #customize_firefox
-  setup_mic_volume_script
-  setup_mic_systemd_service
   success "All done! Reboot recommended."
 }
 
