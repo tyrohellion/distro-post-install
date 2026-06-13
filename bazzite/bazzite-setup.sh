@@ -62,7 +62,7 @@ install_flatpaks() {
     io.github.seadve.Mousai
     io.github.Faugus.faugus-launcher
     info.febvre.Komikku
-    de.wwwtech.gitte
+    io.github.shiftey.Desktop
     com.feaneron.Boatswain
   )
 
