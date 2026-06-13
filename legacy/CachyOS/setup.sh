@@ -22,8 +22,6 @@ quiet() { "$@" >/dev/null 2>&1; }
 alacritty_config="$HOME/.config/alacritty/alacritty.toml"
 env_file="/etc/environment"
 
-sudo pacman -Syu --needed --noconfirm yay
-
 install_packages() {
   local packages=(
     base-devel
@@ -573,11 +571,11 @@ customize_firefox() {
 }
 
 main() {
-  install_packages
+  #install_packages
   install_flatpaks
   apply_konsave
-  set_limine_cmdline
-  setup_fish_config
+  #set_limine_cmdline
+  #setup_fish_config
   setup_mangohud_config
   customize_alacritty_config
   customize_firefox
