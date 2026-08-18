@@ -33,21 +33,16 @@ install_flatpaks() {
     com.github.taiko2k.avvie
     io.github.josephmawa.SpellingBee
     io.github.wartybix.Constrict
-    org.gnome.design.Lorem
     io.gitlab.theevilskeleton.Upscaler
-    org.gnome.Calculator
     com.spotify.Client
     com.heroicgameslauncher.hgl
-    org.onlyoffice.desktopeditors
     org.localsend.localsend_app
     org.prismlauncher.PrismLauncher
-    org.kde.kcolorchooser
     org.kde.kdenlive
     org.gimp.GIMP
     org.kde.krita
     com.usebottles.bottles
     io.github.plrigaux.sysd-manager
-    io.github.shonebinu.Brief
     io.github.seadve.Mousai
     io.github.swordpuffin.hunt
     com.stremio.Stremio
@@ -61,16 +56,12 @@ install_flatpaks() {
     io.github.anil_e.Codd
     io.github.seadve.Mousai
     io.github.Faugus.faugus-launcher
-    info.febvre.Komikku
     io.github.shiftey.Desktop
     com.feaneron.Boatswain
   )
 
   info "Installing Flatpaks..."
-
-   flatpak remote-add --if-not-exists --system flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
    flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
    flatpak install --system -y flathub "${flatpaks[@]}"
 
   #if ! flatpak list --app | grep -q "^com.stremio.Stremio"; then
@@ -78,23 +69,6 @@ install_flatpaks() {
   #fi
 
   success "Flatpaks installed."
-}
-
-apply_konsave() {
-  local knsv="bazzite.knsv"
-
-  brew install pipx
-  pipx install konsave
-
-  if [[ ! -f "$knsv" ]]; then
-    warn "Konsave file '$knsv' not found. Skipping."
-    return
-  fi
-
-  info "Applying konsave profile..."
-  quiet konsave -i "$knsv"
-  quiet konsave -a bazzite
-  success "KDE profile applied."
 }
 
 setup_mangohud_config() {
@@ -109,7 +83,7 @@ setup_mangohud_config() {
   gpu_load_change
   cpu_stats
   cpu_load_change
-  #fps_limit=237
+  fps_limit=497
   fps
   fps_color_change
   fps_metrics=avg,0.01
@@ -159,7 +133,6 @@ EOF
 
 main() {
   install_flatpaks
-  apply_konsave
   setup_mangohud_config
   success "All done! Reboot recommended."
 }
