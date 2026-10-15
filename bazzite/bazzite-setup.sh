@@ -19,6 +19,8 @@ error()   { echo -e "${RED}✘ $*${RESET}"; }
 
 quiet() { "$@" >/dev/null 2>&1; }
 
+alacritty_config="$HOME/.config/alacritty/alacritty.toml"
+
 install_flatpaks() {
   local flatpaks=(
     io.github.kolunmi.Bazaar
@@ -131,9 +133,200 @@ EOF
   success "MangoHud config written."
 }
 
+apply_konsave() {
+  local knsv="solus.knsv"
+
+  if [[ ! -f "$knsv" ]]; then
+    warn "Konsave file '$knsv' not found. Skipping."
+    return
+  fi
+
+  info "Applying konsave profile..."
+  quiet konsave -i "$knsv"
+  quiet konsave -a solus
+  success "KDE profile applied."
+}
+
+customize_alacritty_config() {
+  info "Writing Alacritty config..."
+  mkdir -p "$(dirname "$alacritty_config")"
+  cat > "$alacritty_config" <<'EOF'
+[env]
+TERM = "xterm-256color"
+WINIT_X11_SCALE_FACTOR = "1"
+
+[window]
+padding = { x = 16, y = 8 }
+dynamic_padding = false
+decorations = "full"
+title = "alacritty"
+opacity = 0.99
+decorations_theme_variant = "Dark"
+
+[window.dimensions]
+columns = 140
+lines = 35
+
+[window.class]
+instance = "Alacritty"
+general = "Alacritty"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.primary]
+background = "0x15181e"
+foreground = "0xD8DEE9"
+
+[colors.normal]
+black = "0x3B4252"
+red = "0xBF616A"
+green = "0xA3BE8C"
+yellow = "0xEBCB8B"
+blue = "0x81A1C1"
+magenta = "0xB48EAD"
+cyan = "0x88C0D0"
+white = "0xE5E9F0"
+
+[colors.bright]
+black = "0x4C566A"
+red = "0xBF616A"
+green = "0xA3BE8C"
+yellow = "0xEBCB8B"
+blue = "0x81A1C1"
+magenta = "0xB48EAD"
+cyan = "0x8FBCBB"
+white = "0xECEFF4"
+
+[font]
+size = 12
+
+[font.normal]
+family = "JetBrains Mono"
+style = "Regular"
+
+[font.bold]
+family = "JetBrains Mono"
+style = "Bold"
+
+[font.italic]
+family = "JetBrains Mono"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrains Mono"
+style = "Bold Italic"
+
+[selection]
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+save_to_clipboard = true
+
+[cursor]
+style = "Underline"
+vi_mode_style = "None"
+unfocused_hollow = true
+thickness = 0.15
+
+[mouse]
+hide_when_typing = true
+
+[[mouse.bindings]]
+mouse = "Middle"
+action = "PasteSelection"
+
+[keyboard]
+[[keyboard.bindings]]
+key = "Paste"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "Copy"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "L"
+mods = "Control"
+action = "ClearLogNotice"
+
+[[keyboard.bindings]]
+key = "L"
+mods = "Control"
+mode = "~Vi"
+chars = "\f"
+
+[[keyboard.bindings]]
+key = "PageUp"
+mods = "Shift"
+mode = "~Alt"
+action = "ScrollPageUp"
+
+[[keyboard.bindings]]
+key = "PageDown"
+mods = "Shift"
+mode = "~Alt"
+action = "ScrollPageDown"
+
+[[keyboard.bindings]]
+key = "Home"
+mods = "Shift"
+mode = "~Alt"
+action = "ScrollToTop"
+
+[[keyboard.bindings]]
+key = "End"
+mods = "Shift"
+mode = "~Alt"
+action = "ScrollToBottom"
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Control|Shift"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "F"
+mods = "Control|Shift"
+action = "SearchForward"
+
+[[keyboard.bindings]]
+key = "B"
+mods = "Control|Shift"
+action = "SearchBackward"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+mode = "Vi"
+action = "ClearSelection"
+
+[[keyboard.bindings]]
+key = "Key0"
+mods = "Control"
+action = "ResetFontSize"
+
+[general]
+live_config_reload = true
+working_directory = "None"
+EOF
+
+  success "Alacritty config written to $alacritty_config"
+}
+
+
 main() {
   install_flatpaks
   setup_mangohud_config
+  apply_konsave
+  customize_alacritty_config
   success "All done! Reboot recommended."
 }
 
